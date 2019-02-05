@@ -129,7 +129,6 @@ Partial Class minimart
         '
         'cmbID
         '
-        Me.cmbID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbID.FormattingEnabled = True
         Me.cmbID.Location = New System.Drawing.Point(102, 30)
         Me.cmbID.Name = "cmbID"

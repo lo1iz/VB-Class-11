@@ -5,19 +5,34 @@ Public Class minimart
     Dim conStr As String = "Server=(LocalDB)\MSSQLLocalDB;AttachDBFilename=|DataDirectory|\Minimart.mdf"
     Dim conn As New SqlConnection(conStr)
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        conn.Open()
-        Dim sql As String = "INSERT INTO products(productid,
+        If cmbID.SelectedIndex = 0 Or txtName.Text = "" Or txtPrice.Text = "" Or txtUnit.Text = "" Then
+            MessageBox.Show("กรุณาใส่ข้อมูลก่อนทำการเพิ่มข้อมูล", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+        Else
+            conn.Open()
+            Dim sql As String = "INSERT INTO products(productid,
                                                 productname,
                                                 unit,
                                                 priceperunit)
-                             values ('','','','')"
-        Showdata()
-        conn.Close()
+                             values (@proid,@proname,@unit,@price)"
+            Dim cmd As New SqlCommand(sql, conn)
+            cmd.Parameters.AddWithValue("proid", cmbID.Text)
+            cmd.Parameters.AddWithValue("proname", txtName.Text)
+            cmd.Parameters.AddWithValue("unit", txtUnit.Text)
+            cmd.Parameters.AddWithValue("price", txtPrice.Text)
+            If cmd.ExecuteNonQuery = 1 Then
+                MessageBox.Show("เพิ่มข้อมูลเรียบร้อย", "Insert Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Else
+                MessageBox.Show("ไม่สามารถเพิ่มข้อมูลได้", "Insert Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+            conn.Close()
+            Resetdata()
+        End If
+
     End Sub
 
     Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
         If cmbID.SelectedIndex = -1 Then
-            MessageBox.Show("กรุณาเลือกสินค้าที่ต้องการแก้ไข")
+            MessageBox.Show("กรุณาเลือกสินค้าที่ต้องการแก้ไข", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Stop)
         Else
             conn.Open()
             Dim sql As String = "UPDATE products
@@ -31,9 +46,9 @@ Public Class minimart
             cmd.Parameters.AddWithValue("unit", txtUnit.Text)
             cmd.Parameters.AddWithValue("proid", cmbID.Text)
             If cmd.ExecuteNonQuery = 1 Then
-                MessageBox.Show("แก้ไขข้อมูลเรียบร้อย", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("แก้ไขข้อมูลเรียบร้อย", "Update Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Else
-                MessageBox.Show("ไม่สามารถแก้ไขข้อมูลได้", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show("ไม่สามารถแก้ไขข้อมูลได้", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             End If
             conn.Close()
 
